@@ -4,17 +4,18 @@
   "description": "Top-down ricochet puzzle game",
   "private": true,
   "scripts": {
-    "dev":    "npx serve . --listen 3000",
-    "serve":  "npx serve .",
-    "lint":   "npx eslint src/**/*.js"
+    "dev":   "npx serve . --listen 3000",
+    "serve": "npx serve .",
+    "build": "node scripts/build.js"
   },
   "keywords": ["game", "ricochet", "puzzle", "canvas"],
   "license": "MIT",
-  "devDependencies": {
-    "serve": "^14.2.3"
+  "dependencies": {
+    "@capacitor/android": "^6.0.0",
+    "@capacitor/core": "^6.0.0"
   },
-  "notes": {
-    "mobile": "Install Capacitor: npm install @capacitor/core @capacitor/cli @capacitor/android @capacitor/ios",
-    "capacitor": "npx cap init && npx cap add android && npx cap sync"
+  "devDependencies": {
+    "@capacitor/cli": "^6.0.0",
+    "serve": "^14.2.3"
   }
 }

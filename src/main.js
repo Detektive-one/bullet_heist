@@ -113,3 +113,29 @@ function closeLevelSelect() { lsModal.classList.remove('open'); }
 document.getElementById('btn-levels').addEventListener('click', openLevelSelect);
 lsOverlay.addEventListener('click', closeLevelSelect);
 document.getElementById('ls-close').addEventListener('click', closeLevelSelect);
+
+// ── Fullscreen + Orientation lock ─────────────────────────────────────────────
+const btnFs = document.getElementById('btn-fullscreen');
+btnFs.addEventListener('click', async () => {
+  try {
+    if (!document.fullscreenElement) {
+      await document.documentElement.requestFullscreen({ navigationUI: 'hide' });
+      await screen.orientation?.lock?.('landscape').catch(() => {});
+      btnFs.textContent = '✕';
+      btnFs.title = 'Exit Fullscreen';
+    } else {
+      await document.exitFullscreen();
+      btnFs.textContent = '⛶';
+      btnFs.title = 'Fullscreen / Landscape';
+    }
+  } catch (e) {
+    console.info('Fullscreen unavailable:', e.message);
+  }
+});
+
+document.addEventListener('fullscreenchange', () => {
+  if (!document.fullscreenElement) {
+    btnFs.textContent = '⛶';
+    btnFs.title = 'Fullscreen / Landscape';
+  }
+});
