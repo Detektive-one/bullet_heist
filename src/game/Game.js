@@ -133,6 +133,7 @@ export class Game {
   // ── Physics update ─────────────────────────────────────────────────────────
 
   _update() {
+    if (!this._level) return;
     // Always animate moving obstacles
     this._updateMovingObstacles();
 
@@ -234,6 +235,7 @@ export class Game {
     r.tick();
 
     r.drawArena();
+    if (!this._level) return;  // level not yet loaded
     r.drawObstacles(this._level.obstacles ?? []);
     r.drawMirrors(this._level.mirrors ?? []);
     r.drawMovingObstacles(this._movingStates.map(s => s.rect));

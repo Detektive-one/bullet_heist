@@ -49,8 +49,9 @@ function updateLevelName(level) {
   if (el) el.textContent = `${level.id}. ${level.name}`;
 }
 
-game.start();
+// Load level FIRST so this._level is set before the render loop fires
 loadLevel(parseInt(localStorage.getItem('bh_level') ?? '1', 10));
+game.start();
 
 // ── Overlay button (Next Level / Try Again) ────────────────────────────────────
 overlay.onButtonClick((label) => {
