@@ -1,3 +1,4 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,10 +17,29 @@
 </head>
 <body>
 
-  <h1 id="game-title">BULLET HEIST</h1>
+  <!-- Landing Page -->
+  <div id="landing-page" class="landing-page">
+    <div class="landing-content">
+      <h1 class="game-title">BULLET HEIST</h1>
+      <div class="loading-screen">
+        <div class="loading-bar">
+          <div class="loading-progress"></div>
+        </div>
+        <p class="loading-text">Loading game assets...</p>
+      </div>
+      <div class="landing-buttons">
+        <button id="btn-start-game" class="btn-primary">START GAME</button>
+        <button id="btn-levels" class="btn-secondary">LEVELS</button>
+        <button id="btn-settings" class="btn-secondary">SETTINGS</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Game Elements (Hidden by default) -->
+  <h1 id="game-title" class="hidden">BULLET HEIST</h1>
 
   <!-- HUD -->
-  <div id="hud">
+  <div id="hud" class="hidden">
     <div class="hud-item">
       <div class="hud-label">Bounces</div>
       <div class="hud-val" id="hud-bounces">0</div>
@@ -35,16 +55,16 @@
   </div>
 
   <!-- Level name strip -->
-  <div id="level-name-bar">
+  <div id="level-name-bar" class="hidden">
     <span id="level-name">1. The Bank Shot</span>
   </div>
 
   <!-- Arena -->
-  <div id="arena-wrap">
+  <div id="arena-wrap" class="hidden">
     <canvas id="c" width="800" height="560"></canvas>
 
     <!-- Win / Lose overlay -->
-    <div id="overlay">
+    <div id="overlay" class="overlay hidden">
       <h2 id="overlay-title">YOU WIN!</h2>
       <p  id="overlay-msg">The bullet found its mark.</p>
       <button id="overlay-btn">PLAY AGAIN</button>
@@ -52,14 +72,14 @@
   </div>
 
   <!-- Status -->
-  <div id="status-bar">
+  <div id="status-bar" class="hidden">
     <span>🎯 Drag</span> from the bullet and release to fire
   </div>
 
   <!-- Controls -->
-  <div id="btn-row">
+  <div id="btn-row" class="hidden">
     <button id="btn-reset">RESET</button>
-    <button id="btn-levels">LEVELS</button>
+    <button id="btn-levels-menu">LEVELS</button>
     <button id="btn-theme">NEON</button>
     <button id="btn-fullscreen" title="Fullscreen / Landscape">⛶</button>
   </div>
@@ -68,7 +88,7 @@
   <div id="portrait-hint">↻ Rotate for best experience</div>
 
   <!-- Level Select Modal -->
-  <div id="level-select">
+  <div id="level-select" class="modal hidden">
     <div id="ls-overlay"></div>
     <div id="ls-panel">
       <div id="ls-header">
@@ -76,6 +96,42 @@
         <button id="ls-close">✕</button>
       </div>
       <div id="ls-grid"></div>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div id="settings-modal" class="modal hidden">
+    <div id="settings-overlay"></div>
+    <div id="settings-panel">
+      <div id="settings-header">
+        <span id="settings-title">SETTINGS</span>
+        <button id="settings-close">✕</button>
+      </div>
+      <div id="settings-content">
+        <div class="setting-item">
+          <label for="sound-toggle">Sound</label>
+          <button id="sound-toggle" class="toggle-btn">ON</button>
+        </div>
+        <div class="setting-item">
+          <label for="music-toggle">Music</label>
+          <button id="music-toggle" class="toggle-btn">ON</button>
+        </div>
+        <div class="setting-item">
+          <label for="difficulty">Difficulty</label>
+          <select id="difficulty">
+            <option value="easy">Easy</option>
+            <option value="medium" selected>Medium</option>
+            <option value="hard">Hard</option>
+          </select>
+        </div>
+        <div class="setting-item">
+          <label for="theme-select">Theme</label>
+          <select id="theme-select">
+            <option value="neon">Neon</option>
+            <option value="arcade">Arcade</option>
+          </select>
+        </div>
+      </div>
     </div>
   </div>
 
