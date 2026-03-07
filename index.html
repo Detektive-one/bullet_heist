@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+
+  <!-- SEO -->
+  <title>Bullet Heist – Ricochet Arena</title>
+  <meta name="description" content="Use a single bullet that ricochets off walls to hit the target. A skill-based top-down puzzle game." />
+  <meta name="theme-color" content="#0a0a12" />
+
+  <!-- PWA / Mobile web app meta -->
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Bullet Heist" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="styles/main.css" />
+
+  <!-- Google Fonts (default theme — ThemeManager will swap if needed) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600&display=swap" />
+</head>
+<body>
+
+  <h1 id="game-title">BULLET HEIST</h1>
+
+  <!-- HUD -->
+  <div id="hud">
+    <div class="hud-item">
+      <div class="hud-label">Bounces</div>
+      <div class="hud-val" id="hud-bounces">0</div>
+    </div>
+    <div class="hud-item">
+      <div class="hud-label">Shots Left</div>
+      <div class="hud-val" id="hud-shots">1</div>
+    </div>
+    <div class="hud-item">
+      <div class="hud-label">Level</div>
+      <div class="hud-val" id="hud-level">1</div>
+    </div>
+  </div>
+
+  <!-- Arena -->
+  <div id="arena-wrap">
+    <canvas id="c" width="800" height="560"></canvas>
+
+    <!-- Win / Lose overlay -->
+    <div id="overlay">
+      <h2 id="overlay-title">YOU WIN!</h2>
+      <p  id="overlay-msg">The bullet found its mark.</p>
+      <button id="overlay-btn">PLAY AGAIN</button>
+    </div>
+  </div>
+
+  <!-- Status -->
+  <div id="status-bar">
+    <span>🎯 Drag</span> from the bullet and release to fire
+  </div>
+
+  <!-- Controls -->
+  <div id="btn-row">
+    <button id="btn-reset">RESET</button>
+    <button id="btn-theme">NEON</button>
+  </div>
+
+  <!-- Game entry point (ES module) -->
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>

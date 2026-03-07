@@ -1,0 +1,185 @@
+/*
+ * main.css — global styles + layout
+ * All colour values reference CSS custom properties set by ThemeManager.
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
+
+:root {
+  /* Defaults (overridden by ThemeManager at runtime) */
+  --color-bg:         #0a0a12;
+  --color-accent:     #ff6b35;
+  --color-accent-alt: #b46cff;
+  --color-target:     #4fffb0;
+  --color-danger:     #ff4455;
+  --color-text:       #e0e0ff;
+  --color-text-muted: #aaa;
+  --color-border:     #ff6b35;
+  --gradient-header:  linear-gradient(90deg, #ff6b35, #f7c59f, #fffff0);
+  --gradient-wrap:    linear-gradient(135deg, #ff6b35 0%, #2d1b69 50%, #ff6b35 100%);
+  --shadow-wrap:      0 0 40px rgba(255,107,53,0.35), 0 0 80px rgba(45,27,105,0.4);
+  --font-primary:     'Orbitron', monospace;
+  --font-body:        'Inter', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background:      var(--color-bg);
+  color:           var(--color-text);
+  font-family:     var(--font-body);
+  display:         flex;
+  flex-direction:  column;
+  align-items:     center;
+  justify-content: center;
+  min-height:      100vh;
+  overflow:        hidden;
+  transition:      background 0.4s;
+}
+
+/* ── Title ─────────────────────────────────────────────────────────────────── */
+#game-title {
+  font-family:    var(--font-primary);
+  font-size:      1.6rem;
+  font-weight:    900;
+  letter-spacing: 4px;
+  background:     var(--gradient-header);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom:  12px;
+  transition:     background 0.4s;
+}
+
+/* ── HUD ────────────────────────────────────────────────────────────────────── */
+#hud {
+  display:       flex;
+  gap:           32px;
+  align-items:   center;
+  margin-bottom: 14px;
+}
+
+.hud-item { text-align: center; }
+
+.hud-label {
+  font-size:      0.65rem;
+  letter-spacing: 2px;
+  color:          var(--color-text-muted);
+  text-transform: uppercase;
+}
+
+.hud-val {
+  font-family: var(--font-primary);
+  font-size:   1.1rem;
+  color:       var(--color-accent);
+  transition:  color 0.4s;
+}
+
+/* ── Arena wrapper ───────────────────────────────────────────────────────────── */
+#arena-wrap {
+  position:      relative;
+  border-radius: 12px;
+  padding:       3px;
+  background:    var(--gradient-wrap);
+  box-shadow:    var(--shadow-wrap);
+  transition:    box-shadow 0.4s;
+}
+
+canvas {
+  display:       block;
+  border-radius: 10px;
+  cursor:        crosshair;
+  /* Scale down on smaller screens while keeping aspect ratio */
+  max-width:     calc(100vw - 32px);
+  max-height:    calc(100vh - 200px);
+}
+
+/* ── Status bar ──────────────────────────────────────────────────────────────── */
+#status-bar {
+  margin-top:     14px;
+  font-size:      0.85rem;
+  color:          var(--color-text-muted);
+  letter-spacing: 1px;
+  height:         24px;
+  text-align:     center;
+}
+
+#status-bar span {
+  color:       var(--color-accent);
+  font-weight: 600;
+  transition:  color 0.4s;
+}
+
+/* ── Buttons ─────────────────────────────────────────────────────────────────── */
+#btn-row {
+  margin-top: 12px;
+  display:    flex;
+  gap:        12px;
+}
+
+button {
+  font-family:    var(--font-primary);
+  font-size:      0.75rem;
+  letter-spacing: 2px;
+  padding:        8px 20px;
+  border:         1px solid var(--color-border);
+  background:     transparent;
+  color:          var(--color-accent);
+  border-radius:  6px;
+  cursor:         pointer;
+  transition:     all 0.2s;
+}
+
+button:hover {
+  background: var(--color-accent);
+  color:      var(--color-bg);
+}
+
+/* ── Overlay ──────────────────────────────────────────────────────────────────── */
+#overlay {
+  position:       absolute;
+  inset:          0;
+  display:        flex;
+  flex-direction: column;
+  align-items:    center;
+  justify-content: center;
+  border-radius:  10px;
+  background:     rgba(10, 10, 18, 0.82);
+  backdrop-filter: blur(4px);
+  z-index:        10;
+  pointer-events: none;
+  opacity:        0;
+  transition:     opacity 0.4s;
+}
+
+#overlay.show {
+  opacity:        1;
+  pointer-events: all;
+}
+
+#overlay h2 {
+  font-family:   var(--font-primary);
+  font-size:     2rem;
+  font-weight:   900;
+  margin-bottom: 12px;
+}
+
+#overlay.win  h2 { color: var(--color-target); text-shadow: 0 0 20px var(--color-target); }
+#overlay.lose h2 { color: var(--color-danger); text-shadow: 0 0 20px var(--color-danger); }
+
+#overlay p {
+  color:         var(--color-text-muted);
+  margin-bottom: 20px;
+  font-size:     0.9rem;
+}
+
+#overlay button {
+  pointer-events: all;
+  font-size:      0.8rem;
+}
+
+/* ── Responsive ───────────────────────────────────────────────────────────────── */
+@media (max-width: 860px) {
+  #game-title { font-size: 1.1rem; letter-spacing: 2px; }
+  .hud-val    { font-size: 0.9rem; }
+  button      { font-size: 0.65rem; padding: 6px 14px; }
+}

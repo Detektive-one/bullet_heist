@@ -1,0 +1,20 @@
+{
+  "name": "bullet-heist",
+  "version": "0.1.0",
+  "description": "Top-down ricochet puzzle game",
+  "private": true,
+  "scripts": {
+    "dev":    "npx serve . --listen 3000",
+    "serve":  "npx serve .",
+    "lint":   "npx eslint src/**/*.js"
+  },
+  "keywords": ["game", "ricochet", "puzzle", "canvas"],
+  "license": "MIT",
+  "devDependencies": {
+    "serve": "^14.2.3"
+  },
+  "notes": {
+    "mobile": "Install Capacitor: npm install @capacitor/core @capacitor/cli @capacitor/android @capacitor/ios",
+    "capacitor": "npx cap init && npx cap add android && npx cap sync"
+  }
+}
