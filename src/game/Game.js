@@ -163,8 +163,8 @@ export class Game {
     if (!mirrorHit) {
       for (const ob of this._currentObstacles()) {
         if (circleRectOverlap(s.x, s.y, BALL_R, ob)) {
-          const prev = { x: s.x - s.vx, y: s.y - s.vy };
-          const res  = resolveObstacleCollision(prev.x, prev.y, s.vx, s.vy, ob);
+          // Pass current (penetrating) position — new resolver uses penetration depth
+          const res = resolveObstacleCollision(s.x, s.y, s.vx, s.vy, ob);
           s.x = res.px; s.y = res.py; s.vx = res.dvx; s.vy = res.dvy;
           bounced = true;
           break;
