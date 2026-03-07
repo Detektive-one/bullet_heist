@@ -1,20 +1,7 @@
-/**
- * Overlay
- * ─────────────────────────────────────────────────────────────────────────────
- * Manages the win/lose full-screen overlay.
- * ─────────────────────────────────────────────────────────────────────────────
- */
 export class Overlay {
-  /**
-   * @param {{
-   *   el: HTMLElement,
-   *   title: HTMLElement,
-   *   msg: HTMLElement,
-   *   btn: HTMLElement,
-   * }} els
-   */
   constructor(els) {
     this._els = els;
+    this._handlers = [];
   }
 
   show(type, title, msg, btnLabel = 'PLAY AGAIN') {
@@ -22,14 +9,18 @@ export class Overlay {
     titleEl.textContent = title;
     msgEl.textContent   = msg;
     btn.textContent     = btnLabel;
-    el.className        = `show ${type}`;  // 'win' | 'lose'
+    el.className        = `show ${type}`;
   }
 
-  hide() {
-    this._els.el.className = '';
-  }
+  hide() { this._els.el.className = ''; }
 
+  /** Register a one-off click handler on the action button */
   onButtonClick(fn) {
-    this._els.btn.addEventListener('click', fn);
+    // Replace previous listener so only one fires
+    const btn = this._els.btn;
+    const handler = () => fn(this._els.btn.textContent);
+    btn.removeEventListener('click', this._lastHandler);
+    this._lastHandler = handler;
+    btn.addEventListener('click', handler);
   }
 }

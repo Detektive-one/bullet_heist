@@ -1,11 +1,4 @@
-/*
- * main.css — global styles + layout
- * All colour values reference CSS custom properties set by ThemeManager.
- * ─────────────────────────────────────────────────────────────────────────────
- */
-
 :root {
-  /* Defaults (overridden by ThemeManager at runtime) */
   --color-bg:         #0a0a12;
   --color-accent:     #ff6b35;
   --color-accent-alt: #b46cff;
@@ -46,140 +39,120 @@ body {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  margin-bottom:  12px;
-  transition:     background 0.4s;
+  margin-bottom:  10px;
 }
 
 /* ── HUD ────────────────────────────────────────────────────────────────────── */
-#hud {
-  display:       flex;
-  gap:           32px;
-  align-items:   center;
-  margin-bottom: 14px;
-}
-
+#hud { display: flex; gap: 32px; align-items: center; margin-bottom: 6px; }
 .hud-item { text-align: center; }
+.hud-label { font-size: 0.65rem; letter-spacing: 2px; color: var(--color-text-muted); text-transform: uppercase; }
+.hud-val   { font-family: var(--font-primary); font-size: 1.1rem; color: var(--color-accent); transition: color 0.4s; }
 
-.hud-label {
-  font-size:      0.65rem;
+/* ── Level name strip ────────────────────────────────────────────────────────── */
+#level-name-bar {
+  font-size:      0.7rem;
   letter-spacing: 2px;
   color:          var(--color-text-muted);
   text-transform: uppercase;
+  margin-bottom:  8px;
 }
-
-.hud-val {
-  font-family: var(--font-primary);
-  font-size:   1.1rem;
-  color:       var(--color-accent);
-  transition:  color 0.4s;
-}
+#level-name { color: var(--color-accent); font-weight: 600; }
 
 /* ── Arena wrapper ───────────────────────────────────────────────────────────── */
 #arena-wrap {
-  position:      relative;
-  border-radius: 12px;
-  padding:       3px;
-  background:    var(--gradient-wrap);
-  box-shadow:    var(--shadow-wrap);
-  transition:    box-shadow 0.4s;
+  position: relative; border-radius: 12px; padding: 3px;
+  background: var(--gradient-wrap); box-shadow: var(--shadow-wrap); transition: box-shadow 0.4s;
 }
 
 canvas {
-  display:       block;
-  border-radius: 10px;
-  cursor:        crosshair;
-  /* Scale down on smaller screens while keeping aspect ratio */
-  max-width:     calc(100vw - 32px);
-  max-height:    calc(100vh - 200px);
+  display: block; border-radius: 10px; cursor: crosshair;
+  max-width: calc(100vw - 32px); max-height: calc(100vh - 220px);
 }
 
 /* ── Status bar ──────────────────────────────────────────────────────────────── */
-#status-bar {
-  margin-top:     14px;
-  font-size:      0.85rem;
-  color:          var(--color-text-muted);
-  letter-spacing: 1px;
-  height:         24px;
-  text-align:     center;
-}
-
-#status-bar span {
-  color:       var(--color-accent);
-  font-weight: 600;
-  transition:  color 0.4s;
-}
+#status-bar { margin-top: 12px; font-size: 0.85rem; color: var(--color-text-muted); letter-spacing: 1px; height: 24px; text-align: center; }
+#status-bar span { color: var(--color-accent); font-weight: 600; }
 
 /* ── Buttons ─────────────────────────────────────────────────────────────────── */
-#btn-row {
-  margin-top: 12px;
-  display:    flex;
-  gap:        12px;
-}
-
+#btn-row { margin-top: 10px; display: flex; gap: 10px; }
 button {
-  font-family:    var(--font-primary);
-  font-size:      0.75rem;
-  letter-spacing: 2px;
-  padding:        8px 20px;
-  border:         1px solid var(--color-border);
-  background:     transparent;
-  color:          var(--color-accent);
-  border-radius:  6px;
-  cursor:         pointer;
-  transition:     all 0.2s;
+  font-family: var(--font-primary); font-size: 0.72rem; letter-spacing: 2px;
+  padding: 8px 18px; border: 1px solid var(--color-border); background: transparent;
+  color: var(--color-accent); border-radius: 6px; cursor: pointer; transition: all 0.2s;
 }
+button:hover { background: var(--color-accent); color: var(--color-bg); }
 
-button:hover {
-  background: var(--color-accent);
-  color:      var(--color-bg);
-}
-
-/* ── Overlay ──────────────────────────────────────────────────────────────────── */
+/* ── Overlay ─────────────────────────────────────────────────────────────────── */
 #overlay {
-  position:       absolute;
-  inset:          0;
-  display:        flex;
-  flex-direction: column;
-  align-items:    center;
-  justify-content: center;
-  border-radius:  10px;
-  background:     rgba(10, 10, 18, 0.82);
-  backdrop-filter: blur(4px);
-  z-index:        10;
-  pointer-events: none;
-  opacity:        0;
-  transition:     opacity 0.4s;
+  position:absolute; inset:0; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; border-radius:10px;
+  background:rgba(10,10,18,0.82); backdrop-filter:blur(4px);
+  z-index:10; pointer-events:none; opacity:0; transition:opacity 0.4s;
+}
+#overlay.show  { opacity:1; pointer-events:all; }
+#overlay h2    { font-family:var(--font-primary); font-size:1.8rem; font-weight:900; margin-bottom:10px; }
+#overlay.win  h2 { color:var(--color-target); text-shadow:0 0 20px var(--color-target); }
+#overlay.lose h2 { color:var(--color-danger); text-shadow:0 0 20px var(--color-danger); }
+#overlay p     { color:var(--color-text-muted); margin-bottom:20px; font-size:0.9rem; }
+#overlay button { pointer-events:all; font-size:0.8rem; }
+
+/* ── Level Select Modal ───────────────────────────────────────────────────────── */
+#level-select {
+  position: fixed; inset: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none; opacity: 0; transition: opacity 0.3s;
+}
+#level-select.open { opacity: 1; pointer-events: all; }
+
+#ls-overlay {
+  position: absolute; inset: 0; background: rgba(5,5,15,0.8); backdrop-filter: blur(6px);
 }
 
-#overlay.show {
-  opacity:        1;
-  pointer-events: all;
+#ls-panel {
+  position: relative; z-index: 1; background: #0e0e1f;
+  border: 1px solid var(--color-accent); border-radius: 14px;
+  padding: 24px; min-width: 340px; max-width: 560px; width: 90%;
+  box-shadow: 0 0 60px rgba(255,107,53,0.25);
+  animation: panelIn 0.25s ease;
 }
+@keyframes panelIn { from { transform: scale(0.92) translateY(12px); } to { transform: none; } }
 
-#overlay h2 {
-  font-family:   var(--font-primary);
-  font-size:     2rem;
-  font-weight:   900;
-  margin-bottom: 12px;
-}
-
-#overlay.win  h2 { color: var(--color-target); text-shadow: 0 0 20px var(--color-target); }
-#overlay.lose h2 { color: var(--color-danger); text-shadow: 0 0 20px var(--color-danger); }
-
-#overlay p {
-  color:         var(--color-text-muted);
+#ls-header {
+  display: flex; align-items: center; justify-content: space-between;
   margin-bottom: 20px;
-  font-size:     0.9rem;
+}
+#ls-title {
+  font-family: var(--font-primary); font-size: 1rem;
+  letter-spacing: 3px; color: var(--color-accent);
+}
+#ls-close {
+  border: none; background: transparent; color: var(--color-text-muted);
+  font-size: 1.1rem; padding: 4px 8px; cursor: pointer; border-radius: 4px;
+  letter-spacing: 0;
+}
+#ls-close:hover { color: var(--color-danger); background: rgba(255,68,85,0.1); }
+
+#ls-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px;
 }
 
-#overlay button {
-  pointer-events: all;
-  font-size:      0.8rem;
+.ls-card {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 12px 8px; border: 1px solid rgba(255,107,53,0.3);
+  background: rgba(255,107,53,0.05); border-radius: 8px; cursor: pointer;
+  transition: all 0.2s; letter-spacing: 0; gap: 4px;
+  font-family: var(--font-body);
 }
+.ls-card:hover { border-color: var(--color-accent); background: rgba(255,107,53,0.15); transform: translateY(-2px); }
+.ls-card.active { border-color: var(--color-accent); background: rgba(255,107,53,0.2); box-shadow: 0 0 12px rgba(255,107,53,0.3); }
+
+.ls-num  { font-family: var(--font-primary); font-size: 1.2rem; color: var(--color-accent); }
+.ls-name { font-size: 0.65rem; color: var(--color-text-muted); text-align: center; text-transform: uppercase; letter-spacing: 1px; }
 
 /* ── Responsive ───────────────────────────────────────────────────────────────── */
 @media (max-width: 860px) {
   #game-title { font-size: 1.1rem; letter-spacing: 2px; }
   .hud-val    { font-size: 0.9rem; }
-  button      { font-size: 0.65rem; padding: 6px 14px; }
+  button      { font-size: 0.62rem; padding: 6px 12px; }
+  #ls-panel   { padding: 16px; }
 }

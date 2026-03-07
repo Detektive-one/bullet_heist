@@ -3,22 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-
-  <!-- SEO -->
   <title>Bullet Heist – Ricochet Arena</title>
   <meta name="description" content="Use a single bullet that ricochets off walls to hit the target. A skill-based top-down puzzle game." />
   <meta name="theme-color" content="#0a0a12" />
-
-  <!-- PWA / Mobile web app meta -->
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Bullet Heist" />
-
-  <!-- Styles -->
   <link rel="stylesheet" href="styles/main.css" />
-
-  <!-- Google Fonts (default theme — ThemeManager will swap if needed) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600&display=swap" />
 </head>
@@ -42,6 +34,11 @@
     </div>
   </div>
 
+  <!-- Level name strip -->
+  <div id="level-name-bar">
+    <span id="level-name">1. The Bank Shot</span>
+  </div>
+
   <!-- Arena -->
   <div id="arena-wrap">
     <canvas id="c" width="800" height="560"></canvas>
@@ -62,10 +59,22 @@
   <!-- Controls -->
   <div id="btn-row">
     <button id="btn-reset">RESET</button>
+    <button id="btn-levels">LEVELS</button>
     <button id="btn-theme">NEON</button>
   </div>
 
-  <!-- Game entry point (ES module) -->
+  <!-- Level Select Modal -->
+  <div id="level-select">
+    <div id="ls-overlay"></div>
+    <div id="ls-panel">
+      <div id="ls-header">
+        <span id="ls-title">SELECT LEVEL</span>
+        <button id="ls-close">✕</button>
+      </div>
+      <div id="ls-grid"></div>
+    </div>
+  </div>
+
   <script type="module" src="src/main.js"></script>
 </body>
 </html>
