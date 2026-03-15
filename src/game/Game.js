@@ -206,19 +206,13 @@ export class Game {
 
   _endGame(won) {
     this._setState(won ? 'won' : 'lost');
-    const hasNext = !!this._nextLevel();
     if (won) {
+      // main.js patches overlay.show() to handle next-level button visibility
       this.overlay.show('win', '🎯 TARGET HIT!',
-        `${this._bounces} bounce${this._bounces !== 1 ? 's' : ''}. ${this._ratingText()}`,
-        hasNext ? 'NEXT LEVEL' : 'PLAY AGAIN');
+        `${this._bounces} bounce${this._bounces !== 1 ? 's' : ''}. ${this._ratingText()}`);
     } else {
-      this.overlay.show('lose', '💀 MISS!', 'Too many bounces. Reset and try again.', 'TRY AGAIN');
+      this.overlay.show('lose', '💀 MISS!', 'Too many bounces — reset and try again.');
     }
-  }
-
-  _nextLevel() {
-    const idx = (window._LEVELS ?? []).findIndex(l => l.id === this._level.id);
-    return idx >= 0 && idx < (window._LEVELS ?? []).length - 1 ? (window._LEVELS ?? [])[idx + 1] : null;
   }
 
   _ratingText() {
@@ -232,6 +226,7 @@ export class Game {
 
   _render() {
     const r = this.renderer;
+    r.beginFrame();  // sync canvas resolution + set design-space transform (fixes blur)
     r.tick();
 
     r.drawArena();

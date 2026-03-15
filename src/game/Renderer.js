@@ -1,4 +1,4 @@
-import { WALL_THICK, BALL_R, TARGET_R, SIM_DRAW_STEPS } from '../constants.js';
+import { WALL_THICK, BALL_R, TARGET_R, SIM_DRAW_STEPS, DESIGN_W, DESIGN_H } from '../constants.js';
 
 export class Renderer {
   constructor(ctx, getTheme) {
@@ -8,8 +8,33 @@ export class Renderer {
     this._time = 0;
   }
 
-  get W() { return this.ctx.canvas.width; }
-  get H() { return this.ctx.canvas.height; }
+  get W() { return DESIGN_W; }  // always design-space width (800)
+  get H() { return DESIGN_H; }  // always design-space height (560)
+
+  /**
+   * Call at the start of every frame.
+   * 1. Syncs canvas physical resolution to CSS display size × devicePixelRatio
+   *    (prevents upscale blur on retina/HDPI screens).
+   * 2. Sets ctx transform so all subsequent drawing uses DESIGN_W×DESIGN_H
+   *    coordinate space, regardless of actual canvas pixel dimensions.
+   */
+  beginFrame() {
+    const canvas   = this.ctx.canvas;
+    const dpr      = window.devicePixelRatio || 1;
+    const displayW = canvas.clientWidth;
+    const displayH = canvas.clientHeight;
+    if (displayW > 0 && displayH > 0) {
+      const physW = Math.round(displayW * dpr);
+      const physH = Math.round(displayH * dpr);
+      // Only resize when needed (resizing clears the canvas)
+      if (canvas.width !== physW || canvas.height !== physH) {
+        canvas.width  = physW;
+        canvas.height = physH;
+      }
+      // Map DESIGN_W×DESIGN_H → physical pixels (uniform scale since canvas uses aspect-ratio CSS)
+      this.ctx.setTransform(physW / DESIGN_W, 0, 0, physH / DESIGN_H, 0, 0);
+    }
+  }
 
   tick() {
     this._time = performance.now() / 1000;

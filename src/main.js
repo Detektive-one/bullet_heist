@@ -42,6 +42,13 @@ function showScreen(name) {
   });
 }
 
+/** Switch to game screen, guaranteeing the loop is running */
+function goToGame() {
+  showScreen('game');
+  // Restart loop if it was stopped (e.g. after pause→levels flow)
+  if (!game._raf) game.start();
+}
+
 // ── Game state ────────────────────────────────────────────────────────────────
 const game = new Game(canvas, hud, overlay);
 game.start();
@@ -104,13 +111,13 @@ simulateLoading();
 // Start Game → first game level
 document.getElementById('btn-start-game').addEventListener('click', () => {
   loadLevel(GAME_LEVELS[0].id, GAME_LEVELS, 'game');
-  showScreen('game');
+  goToGame();
 });
 
 // Tutorial → first tutorial level
 document.getElementById('btn-tutorial').addEventListener('click', () => {
   loadLevel(TUTORIAL_LEVELS[0].id, TUTORIAL_LEVELS, 'tutorial');
-  showScreen('game');
+  goToGame();
 });
 
 // Levels screen
@@ -169,11 +176,14 @@ function buildLevelPages() {
         <span class="ls-badge ${isTutorial ? 'tutorial' : ''}">${isTutorial ? 'Tutorial' : 'Game'}</span>
       `;
       card.addEventListener('click', () => {
-        const pool = isTutorial ? TUTORIAL_LEVELS : GAME_LEVELS;
-        const mode = isTutorial ? 'tutorial' : 'game';
-        loadLevel(level.id, pool, mode);
-        showScreen('game');
-      });
+      const pool = isTutorial ? TUTORIAL_LEVELS : GAME_LEVELS;
+      const mode = isTutorial ? 'tutorial' : 'game';
+      loadLevel(level.id, pool, mode);
+      // Always resume the game loop (may have been paused via pause→levels flow)
+      if (!game._raf) game.start();
+      closePause();    // clears pause overlay if open
+      goToGame();
+    });
       pageEl.appendChild(card);
     });
 
@@ -272,8 +282,9 @@ function closePause() {
 document.getElementById('pause-resume').addEventListener('click', closePause);
 
 document.getElementById('pause-levels').addEventListener('click', () => {
-  closePause();
-  game.stop();
+  // Don't stop the game — keep it paused, just navigate to levels screen
+  // game.pause() was already called when opening pause overlay
+  pauseOverlay.classList.remove('open');
   showScreen('levels');
 });
 
@@ -286,7 +297,6 @@ document.getElementById('pause-home').addEventListener('click', () => {
   pauseOverlay.classList.remove('open');
   game.stop();
   showScreen('landing');
-  simulateLoading(); // re-trigger loading if going back
 });
 
 // Theme buttons in pause panel
