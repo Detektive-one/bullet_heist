@@ -1,29 +1,15 @@
-/**
- * HUD
- * ─────────────────────────────────────────────────────────────────────────────
- * Controls the DOM-based heads-up display elements (score, bounces, level, etc.)
- * Cleanly decoupled from canvas rendering.
- * ─────────────────────────────────────────────────────────────────────────────
- */
 export class HUD {
-  /**
-   * @param {{
-   *   bounces: HTMLElement,
-   *   shots: HTMLElement,
-   *   level: HTMLElement,
-   *   status: HTMLElement,
-   * }} els
-   */
   constructor(els) {
     this._els = els;
   }
 
-  setBounces(n) { this._els.bounces.textContent = n; }
-  setShots(n)   { this._els.shots.textContent   = n; }
-  setLevel(n)   { this._els.level.textContent   = n; }
+  setBounces(n) { if (this._els.bounces) this._els.bounces.textContent = n; }
+  setShots(n)   { if (this._els.shots)   this._els.shots.textContent   = n; }
+  setLevel(n)   { if (this._els.level)   this._els.level.textContent   = n; }
+  setPar(n)     { const el = document.getElementById('hud-par'); if (el) el.textContent = n ?? '—'; }
 
   setStatus(html) {
-    this._els.status.innerHTML = html;
+    if (this._els.status) this._els.status.innerHTML = html;
   }
 
   showIdle() {

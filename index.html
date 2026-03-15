@@ -1,4 +1,3 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,123 +16,163 @@
 </head>
 <body>
 
-  <!-- Landing Page -->
-  <div id="landing-page" class="landing-page">
+  <!-- ══════════════════════════════════════════════════════════
+       SCREEN: LANDING
+       ══════════════════════════════════════════════════════════ -->
+  <div id="screen-landing" class="screen active">
     <div class="landing-content">
       <h1 class="game-title">BULLET HEIST</h1>
-      <div class="loading-screen">
-        <div class="loading-bar">
-          <div class="loading-progress"></div>
+      <p class="game-subtitle">One bullet. One shot. Infinite angles.</p>
+
+      <div id="loading-screen" class="loading-screen">
+        <div class="loading-bar"><div id="loading-progress" class="loading-progress"></div></div>
+        <p class="loading-text">Loading…</p>
+      </div>
+
+      <div id="landing-buttons" class="landing-buttons hidden">
+        <button id="btn-start-game"  class="btn-primary">▶ START GAME</button>
+        <button id="btn-tutorial"    class="btn-secondary">📖 TUTORIAL</button>
+        <button id="btn-levels-land" class="btn-secondary">🗺 LEVELS</button>
+        <button id="btn-settings-land" class="btn-secondary">⚙ SETTINGS</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       SCREEN: LEVEL SELECT (paginated)
+       ══════════════════════════════════════════════════════════ -->
+  <div id="screen-levels" class="screen">
+    <div class="ls-screen-inner">
+      <div class="ls-screen-header">
+        <button id="ls-back" class="icon-btn">← BACK</button>
+        <h2 id="ls-screen-title" class="ls-screen-title">LEVELS</h2>
+        <span id="ls-page-indicator" class="ls-page-indicator">1 / 1</span>
+      </div>
+
+      <!-- Sliding viewport -->
+      <div class="ls-viewport">
+        <div id="ls-pages-track" class="ls-pages-track">
+          <!-- Pages injected by JS -->
         </div>
-        <p class="loading-text">Loading game assets...</p>
       </div>
-      <div class="landing-buttons">
-        <button id="btn-start-game" class="btn-primary">START GAME</button>
-        <button id="btn-levels" class="btn-secondary">LEVELS</button>
-        <button id="btn-settings" class="btn-secondary">SETTINGS</button>
+
+      <!-- Page nav dots + arrows -->
+      <div class="ls-page-nav">
+        <button id="ls-prev" class="ls-arrow" aria-label="Previous page">←</button>
+        <div id="ls-dots" class="ls-dots"></div>
+        <button id="ls-next" class="ls-arrow" aria-label="Next page">→</button>
       </div>
     </div>
   </div>
 
-  <!-- Game Elements (Hidden by default) -->
-  <h1 id="game-title" class="hidden">BULLET HEIST</h1>
+  <!-- ══════════════════════════════════════════════════════════
+       SCREEN: GAME (full-screen arena)
+       ══════════════════════════════════════════════════════════ -->
+  <div id="screen-game" class="screen">
 
-  <!-- HUD -->
-  <div id="hud" class="hidden">
-    <div class="hud-item">
-      <div class="hud-label">Bounces</div>
-      <div class="hud-val" id="hud-bounces">0</div>
+    <!-- Thin top bar: level info + action buttons -->
+    <div id="game-topbar">
+      <span id="game-mode-badge" class="mode-badge">TUTORIAL</span>
+      <span id="topbar-level-name" class="topbar-level-name">1. The Bank Shot</span>
+      <div class="topbar-actions">
+        <button id="btn-reset-top" class="topbar-btn" title="Reset">↺</button>
+        <button id="btn-pause"     class="topbar-btn" title="Pause">⏸</button>
+      </div>
     </div>
-    <div class="hud-item">
-      <div class="hud-label">Shots Left</div>
-      <div class="hud-val" id="hud-shots">1</div>
+
+    <!-- HUD strip -->
+    <div id="hud">
+      <div class="hud-item">
+        <div class="hud-label">Bounces</div>
+        <div class="hud-val" id="hud-bounces">0</div>
+      </div>
+      <div class="hud-item">
+        <div class="hud-label">Shots</div>
+        <div class="hud-val" id="hud-shots">1</div>
+      </div>
+      <div class="hud-item">
+        <div class="hud-label">Par</div>
+        <div class="hud-val" id="hud-par">2</div>
+      </div>
     </div>
-    <div class="hud-item">
-      <div class="hud-label">Level</div>
-      <div class="hud-val" id="hud-level">1</div>
+
+    <!-- Arena — fills remaining screen -->
+    <div id="arena-wrap">
+      <canvas id="c" width="800" height="560"></canvas>
+
+      <!-- Win / Lose overlay (inside canvas) -->
+      <div id="overlay">
+        <h2 id="overlay-title">TARGET HIT!</h2>
+        <p  id="overlay-msg">Nice shot.</p>
+        <div class="overlay-btns">
+          <button id="overlay-next">NEXT LEVEL</button>
+          <button id="overlay-retry">RETRY</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Status hint below canvas -->
+    <div id="status-bar"><span>🎯 Drag</span> from the bullet to aim</div>
+
+    <!-- ── PAUSE OVERLAY ─────────────────────────────── -->
+    <div id="pause-overlay">
+      <div id="pause-panel">
+        <h2 class="pause-title">PAUSED</h2>
+
+        <div class="pause-section">
+          <div class="pause-label">THEME</div>
+          <div id="pause-theme-btns" class="pause-theme-grid"></div>
+        </div>
+
+        <div class="pause-section">
+          <div class="pause-label">LEVEL</div>
+          <div class="pause-level-info" id="pause-level-info">1. The Bank Shot</div>
+        </div>
+
+        <div class="pause-actions">
+          <button id="pause-resume"   class="pause-btn pause-btn-accent">▶ RESUME</button>
+          <button id="pause-levels"   class="pause-btn">🗺 LEVELS</button>
+          <button id="pause-settings" class="pause-btn">⚙ SETTINGS</button>
+          <button id="pause-home"     class="pause-btn">🏠 HOME</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /screen-game -->
+
+  <!-- ══════════════════════════════════════════════════════════
+       MODAL: SETTINGS (appears on top of any screen)
+       ══════════════════════════════════════════════════════════ -->
+  <div id="settings-modal" class="modal-overlay hidden">
+    <div id="settings-panel" class="modal-panel">
+      <div class="modal-header">
+        <span class="modal-title">SETTINGS</span>
+        <button id="settings-close" class="icon-btn small">✕</button>
+      </div>
+      <div class="setting-item">
+        <label>Sound</label>
+        <button id="sound-toggle" class="toggle-btn">ON</button>
+      </div>
+      <div class="setting-item">
+        <label>Music</label>
+        <button id="music-toggle" class="toggle-btn">ON</button>
+      </div>
+      <div class="setting-item">
+        <label>Theme</label>
+        <select id="theme-select">
+          <option value="neon">Neon</option>
+          <option value="arcade">Arcade</option>
+        </select>
+      </div>
+      <div class="setting-item">
+        <label>Fullscreen</label>
+        <button id="btn-fullscreen" class="toggle-btn">⛶</button>
+      </div>
     </div>
   </div>
 
-  <!-- Level name strip -->
-  <div id="level-name-bar" class="hidden">
-    <span id="level-name">1. The Bank Shot</span>
-  </div>
-
-  <!-- Arena -->
-  <div id="arena-wrap" class="hidden">
-    <canvas id="c" width="800" height="560"></canvas>
-
-    <!-- Win / Lose overlay -->
-    <div id="overlay" class="overlay hidden">
-      <h2 id="overlay-title">YOU WIN!</h2>
-      <p  id="overlay-msg">The bullet found its mark.</p>
-      <button id="overlay-btn">PLAY AGAIN</button>
-    </div>
-  </div>
-
-  <!-- Status -->
-  <div id="status-bar" class="hidden">
-    <span>🎯 Drag</span> from the bullet and release to fire
-  </div>
-
-  <!-- Controls -->
-  <div id="btn-row" class="hidden">
-    <button id="btn-reset">RESET</button>
-    <button id="btn-levels-menu">LEVELS</button>
-    <button id="btn-theme">NEON</button>
-    <button id="btn-fullscreen" title="Fullscreen / Landscape">⛶</button>
-  </div>
-
-  <!-- Portrait hint (visible only on narrow portrait phones) -->
+  <!-- Portrait hint -->
   <div id="portrait-hint">↻ Rotate for best experience</div>
-
-  <!-- Level Select Modal -->
-  <div id="level-select" class="modal hidden">
-    <div id="ls-overlay"></div>
-    <div id="ls-panel">
-      <div id="ls-header">
-        <span id="ls-title">SELECT LEVEL</span>
-        <button id="ls-close">✕</button>
-      </div>
-      <div id="ls-grid"></div>
-    </div>
-  </div>
-
-  <!-- Settings Modal -->
-  <div id="settings-modal" class="modal hidden">
-    <div id="settings-overlay"></div>
-    <div id="settings-panel">
-      <div id="settings-header">
-        <span id="settings-title">SETTINGS</span>
-        <button id="settings-close">✕</button>
-      </div>
-      <div id="settings-content">
-        <div class="setting-item">
-          <label for="sound-toggle">Sound</label>
-          <button id="sound-toggle" class="toggle-btn">ON</button>
-        </div>
-        <div class="setting-item">
-          <label for="music-toggle">Music</label>
-          <button id="music-toggle" class="toggle-btn">ON</button>
-        </div>
-        <div class="setting-item">
-          <label for="difficulty">Difficulty</label>
-          <select id="difficulty">
-            <option value="easy">Easy</option>
-            <option value="medium" selected>Medium</option>
-            <option value="hard">Hard</option>
-          </select>
-        </div>
-        <div class="setting-item">
-          <label for="theme-select">Theme</label>
-          <select id="theme-select">
-            <option value="neon">Neon</option>
-            <option value="arcade">Arcade</option>
-          </select>
-        </div>
-      </div>
-    </div>
-  </div>
 
   <script type="module" src="src/main.js"></script>
 </body>
