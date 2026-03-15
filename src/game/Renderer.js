@@ -34,6 +34,11 @@ export class Renderer {
         canvas.width  = physW;
         canvas.height = physH;
       }
+      // ★ Clear ENTIRE physical canvas first (letterbox areas included)
+      //   Without this, slingshot/trail pixels in the letterbox persist forever.
+      this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+      this.ctx.clearRect(0, 0, physW, physH);
+
       // Uniform scale: largest factor that fits BOTH dimensions
       const scale   = Math.min(physW / DESIGN_W, physH / DESIGN_H);
       const offsetX = (physW - DESIGN_W * scale) * 0.5;  // center horizontally
@@ -41,6 +46,16 @@ export class Renderer {
       this.ctx.setTransform(scale, 0, 0, scale, offsetX, offsetY);
       // Expose to Input.js for pointer → design-space conversion
       window._gameTransform = { scale, offsetX, offsetY };
+    }
+  }
+
+  /** Clear entire canvas — call when stopping the game loop so no stale frame lingers. */
+  clearAll() {
+    const { canvas } = this.ctx.canvas ? this.ctx : { canvas: this.ctx.canvas };
+    const c = this.ctx.canvas;
+    if (c && c.width > 0 && c.height > 0) {
+      this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+      this.ctx.clearRect(0, 0, c.width, c.height);
     }
   }
 

@@ -65,6 +65,8 @@ export class Game {
     this._setState('idle');
     this.hud.showIdle();
     this.overlay.hide();
+    // Wipe any stale rubber-band / trajectory pixels immediately
+    this.renderer.clearAll();
   }
 
   start() {
@@ -72,7 +74,7 @@ export class Game {
     this._loop();
   }
 
-  stop() { if (this._raf) cancelAnimationFrame(this._raf); this._raf = null; }
+  stop()    { if (this._raf) cancelAnimationFrame(this._raf); this._raf = null; this.renderer.clearAll(); }
   destroy() { this.stop(); this.input.destroy(); }
 
   get state() { return this._state; }
