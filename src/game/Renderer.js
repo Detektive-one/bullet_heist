@@ -13,10 +13,14 @@ export class Renderer {
 
   /**
    * Call at the start of every frame.
-   * 1. Syncs canvas physical resolution to CSS display size × devicePixelRatio
-   *    (prevents upscale blur on retina/HDPI screens).
-   * 2. Sets ctx transform so all subsequent drawing uses DESIGN_W×DESIGN_H
-   *    coordinate space, regardless of actual canvas pixel dimensions.
+   * 
+   * 1. Sets canvas PHYSICAL resolution = CSS display size × devicePixelRatio
+   *    (sharp rendering, no upscale blur).
+   * 2. Applies a UNIFORM scale + center offset so that the 800×560 design space
+   *    is drawn as large as possible inside the canvas without any distortion.
+   *    The "letterbox" area outside shows the canvas background (#0a0a12).
+   * 3. Stores the transform in window._gameTransform so Input.js can
+   *    convert pointer coords back to design space correctly.
    */
   beginFrame() {
     const canvas   = this.ctx.canvas;
@@ -26,13 +30,17 @@ export class Renderer {
     if (displayW > 0 && displayH > 0) {
       const physW = Math.round(displayW * dpr);
       const physH = Math.round(displayH * dpr);
-      // Only resize when needed (resizing clears the canvas)
       if (canvas.width !== physW || canvas.height !== physH) {
         canvas.width  = physW;
         canvas.height = physH;
       }
-      // Map DESIGN_W×DESIGN_H → physical pixels (uniform scale since canvas uses aspect-ratio CSS)
-      this.ctx.setTransform(physW / DESIGN_W, 0, 0, physH / DESIGN_H, 0, 0);
+      // Uniform scale: largest factor that fits BOTH dimensions
+      const scale   = Math.min(physW / DESIGN_W, physH / DESIGN_H);
+      const offsetX = (physW - DESIGN_W * scale) * 0.5;  // center horizontally
+      const offsetY = (physH - DESIGN_H * scale) * 0.5;  // center vertically
+      this.ctx.setTransform(scale, 0, 0, scale, offsetX, offsetY);
+      // Expose to Input.js for pointer → design-space conversion
+      window._gameTransform = { scale, offsetX, offsetY };
     }
   }
 

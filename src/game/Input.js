@@ -71,15 +71,21 @@ export class Input {
     this._canvas.addEventListener('touchend',   this._onTouchEnd,   { passive: false });
   }
 
-  /** Convert client coords → design-space coords */
+  /** Convert client pointer coords → design-space (800×560) coords */
   _pos(e) {
-    const rect   = this._canvas.getBoundingClientRect();
-    const scaleX = this._canvas.width  / rect.width;
-    const scaleY = this._canvas.height / rect.height;
-    const src    = e.touches ? e.touches[0] : e;
+    const rect = this._canvas.getBoundingClientRect();
+    const dpr  = window.devicePixelRatio || 1;
+    const src  = e.touches ? e.touches[0] : e;
+
+    // Physical pixel position within the canvas
+    const physX = (src.clientX - rect.left) * dpr;
+    const physY = (src.clientY - rect.top)  * dpr;
+
+    // Invert the Renderer transform (scale + center offset) → design coords
+    const t = window._gameTransform ?? { scale: dpr, offsetX: 0, offsetY: 0 };
     return {
-      x: (src.clientX - rect.left) * scaleX,
-      y: (src.clientY - rect.top)  * scaleY,
+      x: (physX - t.offsetX) / t.scale,
+      y: (physY - t.offsetY) / t.scale,
     };
   }
 
