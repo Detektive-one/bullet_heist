@@ -1,8 +1,18 @@
 // ─── Design-space dimensions ─────────────────────────────────────────────────
 // All level coordinates are authored in this space.
 // The renderer scales to the actual canvas size at runtime.
-export const DESIGN_W = 800;
-export const DESIGN_H = 560;
+export let DESIGN_W = 800;
+export let DESIGN_H = 560;
+
+export function setDesignMode(isPortrait) {
+  if (isPortrait) {
+    DESIGN_W = 560;
+    DESIGN_H = 800;
+  } else {
+    DESIGN_W = 800;
+    DESIGN_H = 560;
+  }
+}
 
 // ─── Physics ──────────────────────────────────────────────────────────────────
 export const WALL_THICK = 18;
