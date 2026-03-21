@@ -70,27 +70,20 @@
        ══════════════════════════════════════════════════════════ -->
   <div id="screen-game" class="screen">
 
-    <!-- Thin top bar: level info + action buttons -->
+    <!-- Thin top bar: level info, HUD stats + action buttons at corners -->
     <div id="game-topbar">
-      <button id="btn-pause"     class="topbar-btn" title="Pause">⏸</button>
-      <span id="topbar-level-name" class="topbar-level-name">1. The Bank Shot</span>
-      <button id="btn-reset-top" class="topbar-btn" title="Reset">↺</button>
-    </div>
+      <button id="btn-pause" class="topbar-btn" title="Pause">⏸</button>
+      
+      <div class="topbar-center">
+        <span id="topbar-level-name" class="topbar-level-name">1. The Bank Shot</span>
+        <div class="hud-strip">
+          <div class="hud-item"><span class="hud-label">Bounces:</span><span class="hud-val" id="hud-bounces">0</span></div>
+          <div class="hud-item"><span class="hud-label">Shots:</span><span class="hud-val" id="hud-shots">1</span></div>
+          <div class="hud-item"><span class="hud-label">Par:</span><span class="hud-val" id="hud-par">2</span></div>
+        </div>
+      </div>
 
-    <!-- HUD strip -->
-    <div id="hud">
-      <div class="hud-item">
-        <div class="hud-label">Bounces</div>
-        <div class="hud-val" id="hud-bounces">0</div>
-      </div>
-      <div class="hud-item">
-        <div class="hud-label">Shots</div>
-        <div class="hud-val" id="hud-shots">1</div>
-      </div>
-      <div class="hud-item">
-        <div class="hud-label">Par</div>
-        <div class="hud-val" id="hud-par">2</div>
-      </div>
+      <button id="btn-reset-top" class="topbar-btn" title="Reset">↺</button>
     </div>
 
     <!-- Arena — fills remaining screen -->

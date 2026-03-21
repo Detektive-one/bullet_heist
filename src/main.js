@@ -2,52 +2,8 @@ import { ThemeManager } from './theme/ThemeManager.js';
 import { Game }         from './game/Game.js';
 import { HUD }          from './ui/HUD.js';
 import { Overlay }      from './ui/Overlay.js';
+
 import { TUTORIAL_LEVELS, GAME_LEVELS, getLevelById, getNextLevel } from './levels/index.js';
-import { setDesignMode } from './constants.js';
-
-// ── Orientation Transpose ─────────────────────────────────────────────────────
-let _isPortrait = false;
-function updateOrientation() {
-  _isPortrait = window.innerHeight > window.innerWidth;
-  setDesignMode(_isPortrait);
-}
-window.addEventListener('resize', () => {
-  const wasPortrait = _isPortrait;
-  updateOrientation();
-  // We use try/catch or late binding for game check to avoid ReferenceError
-  // before the const game is initialized.
-  let isIdle = false;
-  try { isIdle = (game && game.state === 'idle'); } catch(e) { }
-
-  if (wasPortrait !== _isPortrait && isIdle) {
-    if (_currentLevelId) loadLevel(_currentLevelId, _currentPool, _currentMode);
-  }
-});
-updateOrientation();
-
-function transposeLevel(level) {
-  if (!_isPortrait) return level;
-  return {
-    ...level,
-    ballStart: { x: level.ballStart.y, y: level.ballStart.x },
-    target:    { x: level.target.y, y: level.target.x },
-    obstacles: (level.obstacles ?? []).map(ob => ({
-      ...ob, x: ob.y, y: ob.x, w: ob.h, h: ob.w
-    })),
-    movingObstacles: (level.movingObstacles ?? []).map(ob => ({
-      ...ob, x: ob.y, y: ob.x, w: ob.h, h: ob.w,
-      axis: ob.axis === 'x' ? 'y' : 'x'
-    })),
-    mirrors: (level.mirrors ?? []).map(m => {
-      const arrowMap = { '←': '↑', '→': '↓', '↑': '←', '↓': '→' };
-      return {
-        ...m, x: m.y, y: m.x, w: m.h, h: m.w,
-        deflect: { vx: m.deflect.vy, vy: m.deflect.vx },
-        label: arrowMap[m.label] || m.label
-      };
-    })
-  };
-}
 
 // ── Theme ─────────────────────────────────────────────────────────────────────
 const savedTheme = localStorage.getItem('bh_theme') ?? 'neon';
@@ -107,18 +63,17 @@ function loadLevel(id, pool = _currentPool, mode = _currentMode) {
   _currentPool    = pool;
   _currentMode    = mode;
 
-  const baseLevel = getLevelById(id);
-  const playLevel = transposeLevel(baseLevel);
-  game.loadLevel(playLevel);
+  const level = getLevelById(id);
+  game.loadLevel(level);
 
   // Top bar
-  document.getElementById('topbar-level-name').textContent = `${id}. ${baseLevel.name}`;
+  document.getElementById('topbar-level-name').textContent = `${id}. ${level.name}`;
   
   // Pause level info
-  document.getElementById('pause-level-info').textContent = `${id}. ${baseLevel.name}`;
+  document.getElementById('pause-level-info').textContent = `${id}. ${level.name}`;
 
   // Par
-  hud.setPar(baseLevel.parBounces ?? '—');
+  hud.setPar(level.parBounces ?? '—');
 
   // Sync level-select active card
   document.querySelectorAll('.ls-card').forEach(c =>
