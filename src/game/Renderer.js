@@ -115,6 +115,27 @@ export class Renderer {
     for (const rect of rects) this._drawObstacleRect(rect, true);
   }
 
+  drawGates(gates) {
+    for (const gate of gates) {
+      this._drawObstacleRect(gate, false);
+      const { ctx } = this;
+      const t = this.getTheme().canvas;
+      const cx = gate.x + gate.w / 2, cy = gate.y + gate.h / 2;
+      ctx.save();
+      ctx.strokeStyle = t.gateStroke ?? '#4fffb0';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([8, 6]);
+      ctx.strokeRect(gate.x + 4, gate.y + 4, gate.w - 8, gate.h - 8);
+      ctx.setLineDash([]);
+      ctx.fillStyle = t.gateText ?? 'rgba(255,255,255,0.75)';
+      ctx.font = 'bold 11px var(--font-body, Inter)';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('LOCKED', cx, cy);
+      ctx.restore();
+    }
+  }
+
   _drawObstacleRect(ob, isMoving) {
     const { ctx } = this;
     const t = this.getTheme().canvas;
@@ -193,6 +214,49 @@ export class Renderer {
       ctx.font      = '500 10px var(--font-body, Inter)';
       ctx.fillStyle = 'rgba(0,255,255,0.8)';
       ctx.fillText('DEFLECTOR', m.x + m.w / 2, m.y + m.h + 14);
+    }
+  }
+
+  drawSwitches(switches, activeMap) {
+    if (!switches?.length) return;
+    const { ctx } = this;
+    const t = this.getTheme().canvas;
+    const time = this._time;
+
+    for (const sw of switches) {
+      const active = activeMap?.get(sw.id);
+      const r = sw.r ?? 16;
+      const pulse = active ? 0 : Math.sin(time * 5) * 3;
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(sw.x, sw.y, r + 8 + pulse, 0, Math.PI * 2);
+      ctx.strokeStyle = active ? (t.switchActiveGlow ?? 'rgba(79,255,176,0.5)') : (t.switchGlow ?? 'rgba(255,220,80,0.4)');
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      const g = ctx.createRadialGradient(sw.x - 4, sw.y - 4, 2, sw.x, sw.y, r);
+      if (active) {
+        g.addColorStop(0, t.switchActiveInner ?? '#eafff4');
+        g.addColorStop(1, t.switchActiveOuter ?? '#4fffb0');
+      } else {
+        g.addColorStop(0, t.switchInner ?? '#fff6b8');
+        g.addColorStop(1, t.switchOuter ?? '#ffcc00');
+      }
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.arc(sw.x, sw.y, r, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = active ? (t.targetBorder ?? '#4fffb0') : (t.bounceMarker ?? 'rgba(255,200,80,0.7)');
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      ctx.fillStyle = active ? '#062013' : '#3a2500';
+      ctx.font = 'bold 10px var(--font-body, Inter)';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(active ? 'ON' : (sw.label ?? sw.id), sw.x, sw.y);
+      ctx.restore();
     }
   }
 

@@ -3,10 +3,12 @@
   "version": "0.1.0",
   "description": "Top-down ricochet puzzle game",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev":   "npx serve . --listen 3000",
     "serve": "npx serve .",
-    "build": "node scripts/build.js"
+    "build": "node scripts/build.js",
+    "validate:levels": "node scripts/validate-levels.js"
   },
   "keywords": ["game", "ricochet", "puzzle", "canvas"],
   "license": "MIT",

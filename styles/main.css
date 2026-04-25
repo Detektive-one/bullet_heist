@@ -256,6 +256,12 @@ html, body {
   border-radius: 20px; color: var(--color-accent); letter-spacing: 1px; text-transform: uppercase;
 }
 .ls-badge.tutorial { background: rgba(79,255,176,0.15); border-color: rgba(79,255,176,0.4); color: var(--color-target); }
+.ls-best {
+  font-family: var(--font-primary);
+  font-size: 0.48rem;
+  color: var(--color-text-muted);
+  letter-spacing: 1px;
+}
 
 /* Page nav */
 .ls-page-nav {

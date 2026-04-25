@@ -1,5 +1,5 @@
-import { DESIGN_W, DESIGN_H, BALL_R, TARGET_R } from '../constants.js';
-import { bounceWalls, circleRectOverlap, resolveObstacleCollision, simulateTrajectory } from './Physics.js';
+import { DESIGN_W, DESIGN_H, BALL_R, TARGET_R, SWITCH_R } from '../constants.js';
+import { bounceWalls, circleCircleOverlap, circleRectOverlap, resolveObstacleCollision, simulateTrajectory } from './Physics.js';
 import { Input }        from './Input.js';
 import { Renderer }     from './Renderer.js';
 import { HUD }          from '../ui/HUD.js';
@@ -21,6 +21,8 @@ export class Game {
     this._bounces = 0;
     this._trajectory = [];
     this._aimPower   = 0;
+    this._switches   = new Map();
+    this._shotsLeft  = 1;
 
     // Moving obstacle runtime state
     this._movingStates = [];  // [{ def, rect, pos, dir }]
@@ -54,6 +56,8 @@ export class Game {
     this._bounces = 0;
     this._trajectory = [];
     this._aimPower   = 0;
+    this._shotsLeft  = this._level.shots ?? 1;
+    this._switches   = new Map((this._level.switches ?? []).map(sw => [sw.id, false]));
 
     // Reset moving obstacles
     for (const s of this._movingStates) {
@@ -64,6 +68,7 @@ export class Game {
 
     this._setState('idle');
     this.hud.showIdle();
+    this.hud.setShots(this._shotsLeft);
     this.overlay.hide();
     // Wipe any stale rubber-band / trajectory pixels immediately
     this.renderer.clearAll();
@@ -75,9 +80,12 @@ export class Game {
   }
 
   stop()    { if (this._raf) cancelAnimationFrame(this._raf); this._raf = null; this.renderer.clearAll(); }
+  pause()   { this.stop(); }
+  resume()  { if (!this._raf) this.start(); }
   destroy() { this.stop(); this.input.destroy(); }
 
   get state() { return this._state; }
+  get bounces() { return this._bounces; }
 
   // ── Helpers ────────────────────────────────────────────────────────────────
 
@@ -85,7 +93,27 @@ export class Game {
 
   /** All obstacle rects in play right now (static + moving current positions) */
   _currentObstacles() {
-    return [...(this._level.obstacles ?? []), ...this._movingStates.map(s => s.rect)];
+    return [
+      ...(this._level.obstacles ?? []),
+      ...this._activeGates(),
+      ...this._movingStates.map(s => s.rect),
+    ];
+  }
+
+  _activeGates() {
+    return (this._level.gates ?? []).filter(gate => !this._switchGroupActive(gate.requires ?? [gate.switchId]));
+  }
+
+  _switchGroupActive(ids = []) {
+    return ids.filter(Boolean).every(id => this._switches.get(id));
+  }
+
+  _requiredSwitchIds() {
+    return this._level.requiredSwitches ?? (this._level.switches ?? []).filter(sw => sw.required).map(sw => sw.id);
+  }
+
+  _allRequiredSwitchesActive() {
+    return this._switchGroupActive(this._requiredSwitchIds());
   }
 
   _targetRadius() {
@@ -122,7 +150,9 @@ export class Game {
       this._vel.x = vx; this._vel.y = vy;
       this._trajectory = [];
       this._setState('flying');
+      this._shotsLeft = Math.max(0, this._shotsLeft - 1);
       this.hud.showFired();
+      this.hud.setShots(this._shotsLeft);
     };
 
     this.input.onAimCancel = () => {
@@ -182,7 +212,15 @@ export class Game {
       this.renderer.triggerFlash();
       this.hud.setBounces(this._bounces);
       if (this._bounces > this._level.maxBounces + 2) {
-        this._endGame(false); return;
+        this._miss('Too many bounces.'); return;
+      }
+    }
+
+    for (const sw of (this._level.switches ?? [])) {
+      if (!this._switches.get(sw.id) && circleCircleOverlap(this._ball.x, this._ball.y, BALL_R, sw.x, sw.y, sw.r ?? SWITCH_R)) {
+        this._switches.set(sw.id, true);
+        this.renderer.triggerFlash();
+        this.hud.showSwitch(sw.label ?? sw.id);
       }
     }
 
@@ -190,8 +228,22 @@ export class Game {
     const dx = this._ball.x - this._level.target.x;
     const dy = this._ball.y - this._level.target.y;
     if (Math.sqrt(dx*dx + dy*dy) < this._targetRadius() + BALL_R - 2) {
-      this._endGame(true);
+      if (this._allRequiredSwitchesActive()) this._endGame(true);
+      else this._miss('Vault locked. Hit the switch first.');
     }
+  }
+
+  _miss(reason) {
+    if (this._shotsLeft > 0) {
+      this._ball = { ...this._level.ballStart };
+      this._vel = { x: 0, y: 0 };
+      this._trajectory = [];
+      this._aimPower = 0;
+      this._setState('idle');
+      this.hud.showRetry(this._shotsLeft, reason);
+      return;
+    }
+    this._endGame(false, reason);
   }
 
   _updateMovingObstacles() {
@@ -206,14 +258,14 @@ export class Game {
     }
   }
 
-  _endGame(won) {
+  _endGame(won, reason = '') {
     this._setState(won ? 'won' : 'lost');
     if (won) {
       // main.js patches overlay.show() to handle next-level button visibility
       this.overlay.show('win', '🎯 TARGET HIT!',
         `${this._bounces} bounce${this._bounces !== 1 ? 's' : ''}. ${this._ratingText()}`);
     } else {
-      this.overlay.show('lose', '💀 MISS!', 'Too many bounces — reset and try again.');
+      this.overlay.show('lose', 'MISS!', reason || 'Reset and try again.');
     }
   }
 
@@ -234,8 +286,10 @@ export class Game {
     r.drawArena();
     if (!this._level) return;  // level not yet loaded
     r.drawObstacles(this._level.obstacles ?? []);
+    r.drawGates(this._activeGates());
     r.drawMirrors(this._level.mirrors ?? []);
     r.drawMovingObstacles(this._movingStates.map(s => s.rect));
+    r.drawSwitches(this._level.switches ?? [], this._switches);
     r.drawTarget(this._level.target, this._targetRadius());
 
     if (this._state === 'flying')  r.drawFlyingTrail(this._ball, this._vel);

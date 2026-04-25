@@ -24,6 +24,14 @@ export class HUD {
 
   showFired() {
     this.setStatus('<span>💥 Bullet fired!</span>');
-    this.setShots(0);
+  }
+
+  showSwitch(label) {
+    this.setStatus(`<span>SWITCH ${label}</span> unlocked`);
+  }
+
+  showRetry(shotsLeft, reason) {
+    this.setStatus(`<span>${reason}</span> ${shotsLeft} shot${shotsLeft === 1 ? '' : 's'} left`);
+    this.setShots(shotsLeft);
   }
 }

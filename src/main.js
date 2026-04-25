@@ -58,6 +58,47 @@ let _currentLevelId   = null;
 let _currentPool      = TUTORIAL_LEVELS;   // 'tutorial' | 'game'
 let _currentMode      = 'tutorial';
 
+const PROGRESS_KEY = 'bh_progress_v1';
+const DEFAULT_PROGRESS = { unlocked: ['A1'], best: {} };
+
+function loadProgress() {
+  try {
+    return { ...DEFAULT_PROGRESS, ...(JSON.parse(localStorage.getItem(PROGRESS_KEY)) ?? {}) };
+  } catch {
+    return { ...DEFAULT_PROGRESS };
+  }
+}
+
+function saveProgress(progress) {
+  localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress));
+}
+
+function isUnlocked(level) {
+  return TUTORIAL_LEVELS.includes(level) || loadProgress().unlocked.includes(String(level.id));
+}
+
+function markCompleted(levelId, bounces) {
+  const progress = loadProgress();
+  const id = String(levelId);
+  progress.best[id] = Math.min(progress.best[id] ?? Infinity, bounces);
+  const next = getNextLevel(levelId, _currentPool);
+  if (next && !progress.unlocked.includes(String(next.id))) progress.unlocked.push(String(next.id));
+  saveProgress(progress);
+  refreshLevelCards();
+}
+
+function refreshLevelCards() {
+  const progress = loadProgress();
+  document.querySelectorAll('.ls-card').forEach(card => {
+    const level = getLevelById(card.dataset.id);
+    const unlocked = isUnlocked(level);
+    card.classList.toggle('locked', !unlocked);
+    card.disabled = !unlocked;
+    const best = card.querySelector('.ls-best');
+    if (best) best.textContent = progress.best[String(level.id)] == null ? '--' : `${progress.best[String(level.id)]}B`;
+  });
+}
+
 function loadLevel(id, pool = _currentPool, mode = _currentMode) {
   _currentLevelId = id;
   _currentPool    = pool;
@@ -172,8 +213,10 @@ function buildLevelPages() {
         <span class="ls-num">${level.id}</span>
         <span class="ls-name">${level.name}</span>
         <span class="ls-badge ${isTutorial ? 'tutorial' : ''}">${isTutorial ? 'Tutorial' : 'Game'}</span>
+        <span class="ls-best">--</span>
       `;
       card.addEventListener('click', () => {
+      if (!isUnlocked(level)) return;
       const pool = isTutorial ? TUTORIAL_LEVELS : GAME_LEVELS;
       const mode = isTutorial ? 'tutorial' : 'game';
       loadLevel(level.id, pool, mode);
@@ -199,6 +242,7 @@ function buildLevelPages() {
   });
 
   updatePageNav();
+  refreshLevelCards();
 }
 
 let _pages    = [];
@@ -254,6 +298,7 @@ document.getElementById('overlay-retry').addEventListener('click', () => game.re
 // Patch Overlay.show to also update next-button visibility
 const _origOverlayShow = overlay.show.bind(overlay);
 overlay.show = (type, title, msg, btnLabel) => {
+  if (type === 'win') markCompleted(_currentLevelId, game.bounces ?? game._bounces ?? 0);
   _origOverlayShow(type, title, msg, btnLabel);
   const hasNext = !!getNextLevel(_currentLevelId, _currentPool);
   document.getElementById('overlay-next').style.display = hasNext ? '' : 'none';

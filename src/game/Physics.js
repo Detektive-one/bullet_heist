@@ -12,6 +12,12 @@ export function circleRectOverlap(cx, cy, r, rect) {
   return dx * dx + dy * dy < r * r;
 }
 
+export function circleCircleOverlap(ax, ay, ar, bx, by, br) {
+  const dx = ax - bx, dy = ay - by;
+  const rr = ar + br;
+  return dx * dx + dy * dy < rr * rr;
+}
+
 /**
  * Resolve a ball at (cx, cy) that is currently overlapping an AABB obstacle.
  * Uses penetration-depth on all four faces to find the correct contact face,

@@ -43,8 +43,9 @@ bullet_heist/
 
 ## Adding a Level
 
-1. Create `src/levels/levelN.js` following the existing schema (`ballStart`, `target`, `obstacles[]`, `maxBounces`).
-2. Import and push it into the `LEVELS` array in `src/levels/index.js`.
+1. Add tutorial levels as individual files, or campaign levels in `src/levels/campaign.js`.
+2. Levels support `ballStart`, `target`, `obstacles[]`, `movingObstacles[]`, `mirrors[]`, `switches[]`, `gates[]`, `requiredSwitches[]`, `shots`, `maxBounces`, and `parBounces`.
+3. Run `npm run validate:levels` before shipping.
 
 ## Adding a Theme
 
@@ -65,4 +66,4 @@ npx cap open android
 
 ## Hosting
 
-Drop the entire project folder on [Netlify](https://netlify.com), [Vercel](https://vercel.com), or [GitHub Pages](https://pages.github.com/) and it works — no build step required.
+Run `npm run build` and deploy `www/` for web hosting or Android packaging.

@@ -3,9 +3,11 @@
  * Copies game web assets into www/ for Capacitor to pick up.
  * Run: node scripts/build.js   OR   npm run build
  */
-const fs   = require('fs');
-const path = require('path');
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, '..');
 const DEST = path.join(ROOT, 'www');
 

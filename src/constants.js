@@ -8,6 +8,7 @@ export const DESIGN_H = 560;
 export const WALL_THICK = 18;
 export const BALL_R = 10;
 export const TARGET_R = 18;
+export const SWITCH_R = 16;
 export const MAX_SPEED = 7;
 
 // ─── Slingshot ────────────────────────────────────────────────────────────────

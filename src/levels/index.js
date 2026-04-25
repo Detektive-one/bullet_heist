@@ -6,17 +6,14 @@ import { level5 } from './level5.js';
 import { level6 } from './level6.js';
 import { level7 } from './level7.js';
 import { level8 } from './level8.js';
-import { gameLevelA1 } from './game_level_a1.js';
+import { GAME_LEVELS } from './campaign.js';
+
+export { GAME_LEVELS };
 
 /** Tutorial levels (the original 8 hand-crafted levels) */
 export const TUTORIAL_LEVELS = [
   level1, level2, level3, level4,
   level5, level6, level7, level8,
-];
-
-/** Main game levels (to be expanded) */
-export const GAME_LEVELS = [
-  gameLevelA1,
 ];
 
 /** Combined pool — used internally */
