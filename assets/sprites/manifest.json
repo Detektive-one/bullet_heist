@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "status": "placeholder",
+  "source": "Concept board reference only. Replace entries with production sprite files before renderer integration.",
+  "tileSize": 64,
+  "scale": {
+    "designWidth": 1080,
+    "designHeight": 560,
+    "pixelsPerTile": 40
+  },
+  "requiredSets": {
+    "environment": [
+      "floor_dark_tile",
+      "floor_panel_tile",
+      "wall_top",
+      "wall_corner",
+      "wall_side",
+      "crate_metal",
+      "crate_wood",
+      "glass_block",
+      "hazard_barrier"
+    ],
+    "gameplay": [
+      "bullet_standard",
+      "bullet_piercing",
+      "target_vault",
+      "switch_pressure_pad",
+      "switch_laser",
+      "switch_lever",
+      "gate_security",
+      "gate_laser",
+      "gate_force_field"
+    ],
+    "effects": [
+      "trail_bullet_orange",
+      "spark_ricochet",
+      "burst_target_hit",
+      "burst_switch_on",
+      "door_open"
+    ],
+    "ui": [
+      "button_pause",
+      "button_restart",
+      "icon_bounces",
+      "icon_par",
+      "star_perfect"
+    ]
+  },
+  "files": {}
+}

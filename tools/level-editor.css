@@ -1,0 +1,128 @@
+:root {
+  --bg: #090b10;
+  --panel: #111721;
+  --panel2: #151d29;
+  --line: #263244;
+  --text: #e7edf8;
+  --muted: #8b96a8;
+  --accent: #ffb02e;
+  --green: #45f6a3;
+  --red: #ff4b4b;
+  --blue: #38c8ff;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Inter, Segoe UI, Arial, sans-serif;
+}
+
+.panel {
+  border-right: 1px solid var(--line);
+  background: var(--panel);
+  padding: 16px;
+  overflow: auto;
+}
+
+header {
+  display: grid;
+  gap: 4px;
+  margin-bottom: 18px;
+}
+header strong { font-size: 18px; }
+header span, .toolbar, label, #selection-empty { color: var(--muted); font-size: 12px; }
+
+label {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+input, select, textarea, button {
+  font: inherit;
+}
+
+input, select, textarea {
+  width: 100%;
+  background: #080c12;
+  border: 1px solid var(--line);
+  color: var(--text);
+  border-radius: 6px;
+  padding: 8px;
+}
+
+.tools {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 14px 0;
+}
+
+button {
+  border: 1px solid var(--line);
+  background: var(--panel2);
+  color: var(--text);
+  border-radius: 6px;
+  padding: 9px 10px;
+  cursor: pointer;
+}
+button.active, button.primary {
+  border-color: var(--accent);
+  color: #140b00;
+  background: var(--accent);
+  font-weight: 700;
+}
+button.danger {
+  border-color: rgba(255,75,75,0.45);
+  color: var(--red);
+}
+
+h2 {
+  margin: 18px 0 10px;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--accent);
+}
+
+.hidden { display: none; }
+
+main {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) 220px;
+  min-width: 0;
+  padding: 14px;
+  gap: 12px;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+#editor-canvas {
+  width: 100%;
+  height: 100%;
+  min-height: 360px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #10141c;
+  cursor: crosshair;
+}
+
+#export-output {
+  resize: none;
+  border-radius: 8px;
+  line-height: 1.4;
+  font-family: Consolas, Monaco, monospace;
+  font-size: 12px;
+}

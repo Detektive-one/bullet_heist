@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bullet Heist Level Editor</title>
+  <link rel="stylesheet" href="./level-editor.css" />
+</head>
+<body>
+  <aside class="panel">
+    <header>
+      <strong>Bullet Heist Editor</strong>
+      <span>1080 x 560 design space</span>
+    </header>
+
+    <label>
+      Level
+      <select id="level-select"></select>
+    </label>
+
+    <div class="tools" id="tool-buttons">
+      <button data-tool="select" class="active">Select</button>
+      <button data-tool="obstacle">Obstacle</button>
+      <button data-tool="gate">Gate</button>
+      <button data-tool="switch">Switch</button>
+      <button data-tool="moving">Moving</button>
+      <button data-tool="mirror">Mirror</button>
+      <button data-tool="ball">Start</button>
+      <button data-tool="target">Target</button>
+    </div>
+
+    <section class="props">
+      <h2>Selected</h2>
+      <div id="selection-empty">Nothing selected.</div>
+      <div id="selection-form" class="hidden">
+        <label>ID / Label <input id="prop-id" /></label>
+        <label>X <input id="prop-x" type="number" /></label>
+        <label>Y <input id="prop-y" type="number" /></label>
+        <label>W <input id="prop-w" type="number" /></label>
+        <label>H <input id="prop-h" type="number" /></label>
+        <label>Requires <input id="prop-requires" placeholder="A,B" /></label>
+        <button id="delete-selected" class="danger">Delete</button>
+      </div>
+    </section>
+
+    <section class="meta">
+      <h2>Level Meta</h2>
+      <label>Name <input id="meta-name" /></label>
+      <label>Shots <input id="meta-shots" type="number" min="1" /></label>
+      <label>Max Bounces <input id="meta-max" type="number" min="0" /></label>
+      <label>Par <input id="meta-par" type="number" min="0" /></label>
+    </section>
+
+    <button id="copy-export" class="primary">Copy Export</button>
+  </aside>
+
+  <main>
+    <div class="toolbar">
+      <span id="cursor-readout">x: 0 y: 0</span>
+      <span>Drag to move. Use tools to place objects.</span>
+    </div>
+    <canvas id="editor-canvas" width="1080" height="560"></canvas>
+    <textarea id="export-output" spellcheck="false"></textarea>
+  </main>
+
+  <script type="module" src="./level-editor.js"></script>
+</body>
+</html>
